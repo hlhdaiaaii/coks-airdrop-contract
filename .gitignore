@@ -9,3 +9,6 @@ types
 #Hardhat files
 cache
 artifacts
+
+.env.development
+.env.production

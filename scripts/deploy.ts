@@ -1,25 +1,30 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
+import { COKSNFT__factory } from "../types/factories/COKSNFT__factory";
+import { NFTAirdrop__factory } from "../types/factories/NFTAirdrop__factory";
+import { NFTAirdrop } from "../types/NFTAirdrop";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const [adminSigner, deployer] = await ethers.getSigners();
 
-  // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const airdropFactory = <NFTAirdrop__factory>(
+    await ethers.getContractFactory("NFTAirdrop")
+  );
+  const nftFactory = <COKSNFT__factory>(
+    await ethers.getContractFactory("COKSNFT")
+  );
 
-  await greeter.deployed();
+  const nft = await nftFactory.connect(deployer).deploy();
+  await nft.deployed();
+  console.log("nft deployed to: ", nft.address);
 
-  console.log("Greeter deployed to:", greeter.address);
+  const airdrop: NFTAirdrop = await airdropFactory
+    .connect(deployer)
+    .deploy(adminSigner.address, nft.address);
+  await airdrop.deployed();
+  console.log("airdrop deployed to: ", airdrop.address);
+
+  await airdrop.setRate(73, 15, 8, 3, 1);
+  await nft.setRoleMinter(airdrop.address); // set minter role for airdrop contract
 }
 
 // We recommend this pattern to be able to use async/await everywhere

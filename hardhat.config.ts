@@ -8,8 +8,11 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-abi-exporter";
+import "hardhat-log-remover";
 
-dotenv.config();
+dotenv.config({
+  path: `.env.${process.env.NODE_ENV ? process.env.NODE_ENV : "development"}`,
+});
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -20,12 +23,21 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.10",
+  solidity: "0.8.4",
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    "bsc-testnet": {
+      url: process.env.BSC_RPC,
+      accounts: [
+        process.env.ADMIN_SIGNER_PRIVATE_KEY!,
+        process.env.DEPLOYER_PRIVATE_KEY!,
+      ],
+    },
+    bsc: {
+      url: process.env.BSC_RPC,
+      accounts: [
+        process.env.ADMIN_SIGNER_PRIVATE_KEY!,
+        process.env.DEPLOYER_PRIVATE_KEY!,
+      ],
     },
   },
   gasReporter: {
@@ -33,12 +45,12 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env.BSCSCAN_API_KEY,
   },
   abiExporter: {
     runOnCompile: true,
     flat: true,
-    only: ["Airdrop"],
+    only: ["NFTAirdrop", "MyNFT"],
   },
   typechain: {
     outDir: "types",
