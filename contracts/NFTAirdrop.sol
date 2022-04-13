@@ -56,17 +56,12 @@ contract NFTAirdrop is Ownable {
         fiveStarRate = _fiveStarRate;
     }
 
-    function claim(
-        uint256 _amount,
-        bytes memory _adminSignature,
-        bytes memory _userSignature
-    ) external {
-        require(!isClaimed[msg.sender], "ALREADY_CLAIMED");
+    function claim(uint256 _amount, bytes memory _adminSignature) external {
+        address _to = msg.sender;
 
-        require(
-            verify(msg.sender, _amount, _adminSignature, _userSignature),
-            "NOT_PERMITTED"
-        );
+        require(!isClaimed[_to], "ALREADY_CLAIMED");
+
+        require(verify(_to, _amount, _adminSignature), "NOT_PERMITTED");
 
         // mint
         uint256[] memory attrList = new uint256[](_amount);
@@ -77,17 +72,16 @@ contract NFTAirdrop is Ownable {
             attrList[i] = randomStar;
         }
 
-        nft.safeMintMulti(msg.sender, _amount, attrList);
+        nft.safeMintMulti(_to, _amount, attrList);
 
-        isClaimed[msg.sender] = true;
-        emit Claimed(msg.sender, _amount, attrList);
+        isClaimed[_to] = true;
+        emit Claimed(_to, _amount, attrList);
     }
 
     function verify(
         address _to,
         uint256 _amount,
-        bytes memory _adminSignature,
-        bytes memory _userSignature
+        bytes memory _adminSignature
     ) public view returns (bool) {
         bytes32 messageHash = getMessageHash(_to, _amount);
         bytes32 ethSignedMessageHash = getEthSignedMessageHash(messageHash);
@@ -99,13 +93,7 @@ contract NFTAirdrop is Ownable {
             _adminSignature
         ) == admin;
 
-        // whether this user is who he says he is
-        bool isAuthenticUser = recoverSigner(
-            ethSignedMessageHash,
-            _userSignature
-        ) == msg.sender;
-
-        return isPermittedByAdmin && isAuthenticUser;
+        return isPermittedByAdmin;
     }
 
     function getMessageHash(address _to, uint256 _amount)
