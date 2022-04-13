@@ -83,11 +83,6 @@
         "internalType": "bytes",
         "name": "_adminSignature",
         "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_userSignature",
-        "type": "bytes"
       }
     ],
     "name": "claim",
@@ -395,11 +390,6 @@
       {
         "internalType": "bytes",
         "name": "_adminSignature",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_userSignature",
         "type": "bytes"
       }
     ],

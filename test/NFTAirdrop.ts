@@ -60,17 +60,20 @@ describe("NFTAirdrop", function () {
       console.log("adminSignature: ", adminSignature);
 
       // frontend gets signature from user to prove he is authentically user1
-      const userSignature = await user1.signMessage(
-        ethers.utils.arrayify(messageHash)
-      );
-      console.log("user: ", user1.address);
-      console.log("userSignature: ", userSignature);
+      // const userSignature = await user1.signMessage(
+      //   ethers.utils.arrayify(messageHash)
+      // );
+      // console.log("user: ", user1.address);
+      // console.log("userSignature: ", userSignature);
 
       await expect(
-        airdrop
-          .connect(user1)
-          .claim(CLAIM_AMOUNT, adminSignature, userSignature)
+        airdrop.connect(user1).claim(CLAIM_AMOUNT, adminSignature)
       ).to.emit(airdrop, "Claimed");
+
+      // should not let user claim again
+      await expect(
+        airdrop.connect(user1).claim(CLAIM_AMOUNT, adminSignature)
+      ).to.be.revertedWith("ALREADY_CLAIMED");
     });
 
     it("should not let one user claim another user's", async function () {
@@ -84,23 +87,19 @@ describe("NFTAirdrop", function () {
       );
 
       // user2 is unable to demonstrate that he is the same person as user1.
-      const userSignature = await user2.signMessage(
-        ethers.utils.arrayify(messageHash)
-      );
+      // const userSignature = await user2.signMessage(
+      //   ethers.utils.arrayify(messageHash)
+      // );
 
       // as a result, user2 won't be able to claim user1's tokens
       await expect(
-        airdrop
-          .connect(user2)
-          .claim(user2.address, adminSignature, userSignature)
-      ).to.revertedWith("NOT_PERMITTED");
+        airdrop.connect(user2).claim(CLAIM_AMOUNT, adminSignature)
+      ).to.be.revertedWith("NOT_PERMITTED");
 
       // also, user2 won't be able to claim on behalf of user1 (i.e. tokens are still transfered to user1)
       await expect(
-        airdrop
-          .connect(user2)
-          .claim(user1.address, adminSignature, userSignature)
-      ).to.revertedWith("NOT_PERMITTED");
+        airdrop.connect(user2).claim(CLAIM_AMOUNT, adminSignature)
+      ).to.be.revertedWith("NOT_PERMITTED");
     });
   });
 });
