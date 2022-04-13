@@ -94,7 +94,7 @@ contract NFTAirdrop is Ownable {
 
         // whether this permission is granted from admin
         // whether this user is the user admin permits to claim
-        bool isFromAdmin = recoverSigner(
+        bool isPermittedByAdmin = recoverSigner(
             ethSignedMessageHash,
             _adminSignature
         ) == admin;
@@ -105,7 +105,7 @@ contract NFTAirdrop is Ownable {
             _userSignature
         ) == msg.sender;
 
-        return isFromAdmin && isAuthenticUser;
+        return isPermittedByAdmin && isAuthenticUser;
     }
 
     function getMessageHash(address _to, uint256 _amount)

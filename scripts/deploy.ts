@@ -6,6 +6,9 @@ import { NFTAirdrop } from "../types/NFTAirdrop";
 async function main() {
   const [adminSigner, deployer] = await ethers.getSigners();
 
+  console.log("adminSigner: ", adminSigner.address);
+  console.log("deployer: ", deployer.address);
+
   const airdropFactory = <NFTAirdrop__factory>(
     await ethers.getContractFactory("NFTAirdrop")
   );
