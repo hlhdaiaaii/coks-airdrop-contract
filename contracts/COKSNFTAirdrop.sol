@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-interface INFT {
+interface ICOKSNFT {
     function safeMintMulti(
         address to,
         uint256 num,
@@ -11,11 +11,11 @@ interface INFT {
     ) external;
 }
 
-contract NFTAirdrop is Ownable {
+contract COKSNFTAirdrop is Ownable {
     using Counters for Counters.Counter;
 
     address public admin;
-    INFT public nft;
+    ICOKSNFT public nft;
 
     mapping(address => bool) public isClaimed;
 
@@ -30,7 +30,7 @@ contract NFTAirdrop is Ownable {
 
     constructor(address _admin, address _nft) {
         admin = _admin;
-        nft = INFT(_nft);
+        nft = ICOKSNFT(_nft);
     }
 
     // setter
@@ -39,7 +39,7 @@ contract NFTAirdrop is Ownable {
     }
 
     function setNFT(address _nft) external onlyOwner {
-        nft = INFT(_nft);
+        nft = ICOKSNFT(_nft);
     }
 
     function setRate(

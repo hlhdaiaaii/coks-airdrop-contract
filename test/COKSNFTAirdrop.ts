@@ -5,16 +5,16 @@ import { solidity } from "ethereum-waffle";
 import { Signer } from "ethers";
 import { ethers } from "hardhat";
 import { COKSNFT__factory } from "../types/factories/COKSNFT__factory";
-import { NFTAirdrop__factory } from "../types/factories/NFTAirdrop__factory";
+import { COKSNFTAirdrop__factory } from "../types/factories/COKSNFTAirdrop__factory";
 import { COKSNFT } from "../types/COKSNFT";
-import { NFTAirdrop } from "../types/NFTAirdrop";
+import { COKSNFTAirdrop } from "../types/COKSNFTAirdrop";
 
 dotenv.config();
 chai.use(solidity);
 
-describe("NFTAirdrop", function () {
-  let airdropFactory: NFTAirdrop__factory;
-  let airdrop: NFTAirdrop;
+describe("COKSNFTAirdrop", function () {
+  let airdropFactory: COKSNFTAirdrop__factory;
+  let airdrop: COKSNFTAirdrop;
   let nftFactory: COKSNFT__factory;
   let nft: COKSNFT;
   let adminSigner: Signer | SignerWithAddress;
@@ -29,8 +29,8 @@ describe("NFTAirdrop", function () {
     // admin = new Wallet(process.env.PRIVATE_KEY!, user1.provider);
     [adminSigner, deployer, user1, user2, outsider] = await ethers.getSigners();
 
-    airdropFactory = <NFTAirdrop__factory>(
-      await ethers.getContractFactory("NFTAirdrop")
+    airdropFactory = <COKSNFTAirdrop__factory>(
+      await ethers.getContractFactory("COKSNFTAirdrop")
     );
     nftFactory = <COKSNFT__factory>await ethers.getContractFactory("COKSNFT");
 
@@ -39,8 +39,8 @@ describe("NFTAirdrop", function () {
       .connect(deployer)
       .deploy(await adminSigner.getAddress(), nft.address);
 
-    await airdrop.setRate(73, 15, 8, 3, 1);
-    await nft.setRoleMinter(airdrop.address); // set minter role for airdrop contract
+    await airdrop.connect(deployer).setRate(73, 15, 8, 3, 1);
+    await nft.connect(deployer).setRoleMinter(airdrop.address); // set minter role for airdrop contract
   });
 
   describe("Claim", function () {

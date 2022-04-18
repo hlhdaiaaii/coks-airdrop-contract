@@ -5,6 +5,9 @@
   "license": "MIT",
   "scripts": {
     "compile": "hardhat compile",
+    "deploy": "NODE_ENV=production && hardhat run scripts/deploy.ts --network bsc",
+    "verify": "NODE_ENV=production && hardhat verify --network bsc",
+    "deploy-busd:testnet": "hardhat run scripts/deploy-busd.ts --network bsc-testnet",
     "deploy:testnet": "hardhat run scripts/deploy.ts --network bsc-testnet",
     "verify:testnet": "hardhat verify --network bsc-testnet",
     "test": "hardhat test"
