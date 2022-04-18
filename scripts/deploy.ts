@@ -26,8 +26,8 @@ async function main() {
   await airdrop.deployed();
   console.log("airdrop deployed to: ", airdrop.address);
 
-  await airdrop.setRate(73, 15, 8, 3, 1);
-  await nft.setRoleMinter(airdrop.address); // set minter role for airdrop contract
+  await airdrop.connect(deployer).setRate(73, 15, 8, 3, 1);
+  await nft.connect(deployer).setRoleMinter(airdrop.address); // set minter role for airdrop contract
 }
 
 // We recommend this pattern to be able to use async/await everywhere

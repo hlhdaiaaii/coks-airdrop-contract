@@ -183,7 +183,7 @@
     "name": "nft",
     "outputs": [
       {
-        "internalType": "contract INFT",
+        "internalType": "contract ICOKSNFT",
         "name": "",
         "type": "address"
       }

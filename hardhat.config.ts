@@ -50,7 +50,8 @@ const config: HardhatUserConfig = {
   abiExporter: {
     runOnCompile: true,
     flat: true,
-    only: ["NFTAirdrop", "MyNFT"],
+    only: ["COKSNFTAirdrop", "COKSNFT", "COKSWheel"],
+    except: ['ICOKSNFT']
   },
   typechain: {
     outDir: "types",
